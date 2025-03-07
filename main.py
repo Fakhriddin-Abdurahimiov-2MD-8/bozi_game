@@ -1,14 +1,10 @@
-"""
-Platformer Game
 
-python -m arcade.examples.platform_tutorial.04_user_control
-"""
 import arcade
 
 # Constants
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Platformer"
+WINDOW_TITLE = "Bozi"
 
 # Constants used to scale our sprites from their original size
 TILE_SCALING = 0.5
