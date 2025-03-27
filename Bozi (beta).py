@@ -8,7 +8,7 @@ SCREEN_TITLE = "BOZI"
 
 PLAYER_SCALING = 0.5
 COIN_SCALING = 0.6
-OBSTACLE_SCALING = 0.5
+OBSTACLE_SCALING = 0.7
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 0.5
 JUMP_SPEED = 10
@@ -17,11 +17,12 @@ COIN_COUNT = 10
 OBSTACLE_COUNT = 5
 
 
+
 class Player(arcade.Sprite):
     def __init__(self):
         super().__init__("player.png", PLAYER_SCALING)
-        self.center_x = 50
-        self.center_y = 50
+        self.center_x = 100
+        self.center_y = 100
         self.change_y = 0
 
     def update(self, delta_time: float = 1 / 60):
@@ -104,11 +105,11 @@ class MyGame(arcade.Window):
 
         self.score = 0
         self.score_text = arcade.Text(
-            f"Score: {self.score}",
+            f"{self.score} Монет",
             10,
             SCREEN_HEIGHT - 30,
             arcade.color.BLACK,
-            14,
+            15,
         )
 
     def on_draw(self):
@@ -132,15 +133,15 @@ class MyGame(arcade.Window):
         for coin in coin_hit_list:
             coin.reset()
             self.score += 1
-            self.score_text.text = f"Score: {self.score}"  # Обновляем текст
+            self.score_text.text = f"{self.score} Монет "  # Обновляем текст
 
         obstacle_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.obstacle_list)
         if obstacle_hit_list:
             self.setup()
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.SPACE:
-            self.player_sprite.change_y = JUMP_SPEED
+        if key == arcade.key.SPACE or key== arcade.key.UP:
+            self.player_sprite.change_y  = JUMP_SPEED
 
 
 def main():
