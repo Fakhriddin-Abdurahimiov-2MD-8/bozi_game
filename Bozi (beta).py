@@ -7,7 +7,7 @@ SCREEN_HEIGHT = 600
 SCREEN_TITLE = "BOZI"
 
 PLAYER_SCALING = 0.5
-COIN_SCALING = 0.6
+COIN_SCALING = 2.5
 OBSTACLE_SCALING = 0.7
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 0.5
@@ -15,7 +15,6 @@ JUMP_SPEED = 10
 
 COIN_COUNT = 10
 OBSTACLE_COUNT = 5
-
 
 
 class Player(arcade.Sprite):
@@ -40,7 +39,18 @@ class Player(arcade.Sprite):
 
 class Coin(arcade.Sprite):
     def __init__(self):
-        super().__init__("coin.png", COIN_SCALING)
+        super().__init__("coin1.png", COIN_SCALING)
+
+        self.textures = []
+        for i in range(3):
+            texture = arcade.load_texture(f"coin{i+1}.png")
+            self.textures.append(texture)
+
+        self.current_texture = 0
+        self.texture = self.textures[0]
+        self.animation_speed = 0.1
+        self.time_since_last_frame = 0
+
         self.center_x = random.randint(SCREEN_WIDTH, SCREEN_WIDTH * 2)
         self.center_y = random.randint(0, SCREEN_HEIGHT)
 
@@ -48,6 +58,15 @@ class Coin(arcade.Sprite):
         self.center_x -= 2
         if self.center_x < 0:
             self.reset()
+
+        # Анимация монеты
+        self.time_since_last_frame += delta_time
+        if self.time_since_last_frame >= self.animation_speed:
+            self.current_texture += 1
+            if self.current_texture >= len(self.textures):
+                self.current_texture = 0
+            self.texture = self.textures[self.current_texture]
+            self.time_since_last_frame = 0
 
     def reset(self):
         self.center_x = random.randint(SCREEN_WIDTH, SCREEN_WIDTH * 2)
@@ -133,15 +152,19 @@ class MyGame(arcade.Window):
         for coin in coin_hit_list:
             coin.reset()
             self.score += 1
-            self.score_text.text = f"{self.score} Монет "  # Обновляем текст
+            self.score_text.text = f"{self.score} Монет"  # Обновляем текст
 
         obstacle_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.obstacle_list)
         if obstacle_hit_list:
             self.setup()
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.SPACE or key== arcade.key.UP:
-            self.player_sprite.change_y  = JUMP_SPEED
+        if key == arcade.key.SPACE or key == arcade.key.UP or key== arcade.key.MOUSE_BUTTON_LEFT:
+            self.player_sprite.change_y = JUMP_SPEED
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.player_sprite.change_y = JUMP_SPEED
 
 
 def main():
